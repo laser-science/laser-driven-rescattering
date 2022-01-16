@@ -41,7 +41,7 @@ int main()
 {
 	/*generate input file name&path*/
 	string path_str;
-	path_str="C:/Users/Evan/source/repos/RescatteringCode/x64/Debug/"; /* Put here the path to the folder your input data is in */
+	path_str="C:/Users/Evan/source/repos/LaserDrivenRescattering/x64/Release/"; /* Put here the path to the folder your input data is in */
 
 	/*generate input file*/
 	string file_str;
