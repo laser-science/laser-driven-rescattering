@@ -31,11 +31,11 @@ int main()
 {
 	/*generate input file name&path*/
 	string path_str;
-	path_str="C:/Users/Evan/source/repos/LaserDrivenRescattering/x64/Release/"; /* Put here the path to the folder your input data is in */
+	path_str="getflux_output/"; /* Put here the path to the folder your input data is in */
 
 	/*generate input file*/
 	string file_str;
-	for (int i = 19; i <= 19; i++) /* The range i runs through should be the range of indexes from your input files. *
+	for (int i = 0; i <= 53; i++) /* The range i runs through should be the range of indexes from your input files. *
 								   * This is the first integer which appears in the file name after the element.    *
 								   * If only one charge is desired, set the start i and final i to the file index.  */
 	{
@@ -53,10 +53,10 @@ int main()
 		/* Note that selecting a number of steps that is too small can decrease the precision and */
 		/* smoothness of the interpolation algorithm.                                                            */
 		/*********************************************************************************************************/
-		logbin = false; // Select if log binning or linear binning is to be performed
+		logbin = true; // Select if log binning or linear binning is to be performed
 		Steps = 0; // Select the number of bin steps desired per ion. This separates the minimum and maximum energy per ion by the given number of steps.
 		/* OR if log binning */
-		logStepFactor = 1.05; /*input the log step increase factor in binning desired. i.e., if you want energy bins separated by a factor of two, input "2".
+		logStepFactor = 1.10; /*input the log step increase factor in binning desired. i.e., if you want energy bins separated by a factor of two, input "2".
 		 	 	 	 	 	* This will be the same across all ions. Note that the factor must be greater than one. */
 		/* OR if linear binning */
 		linearStepSize = 10; /*input the linear step size in binning desired */
@@ -128,6 +128,12 @@ void LogBinInterpolate(string path_str, string flag, string ion, string waveleng
 	double E_min=1e150, E_max=0;
 	while(input_long >> d0 >> d1)/* Read in long trajectories*/
 	{
+		if (isdigit(d1) == false) {
+			cout << "Error: A non-numerical value was found in " + file_str_long << endl;
+			cout << "Ion number" + ion + " will be not be binned." << endl;
+			system("pause");
+			return;
+		}
 		if(d0<E_min){
 			E_min = d0;
 		}
@@ -241,8 +247,8 @@ void LogBinInterpolate(string path_str, string flag, string ion, string waveleng
 
 
 	/*generate bin output file */
-	string binnedLong_out_str =  "Z=" + Z + "_binned_Long" + flag + "+" + ion + "_" + wavelength + "nm.dat";
-	string binnedShort_out_str =  "Z=" + Z + "_binned_Short" + flag + "+" + ion + "_" + wavelength + "nm.dat";
+	string binnedLong_out_str =  "binning_output/Z=" + Z + "_binned_Long" + flag + "+" + ion + "_" + wavelength + "nm.dat";
+	string binnedShort_out_str =  "binning_output/Z=" + Z + "_binned_Short" + flag + "+" + ion + "_" + wavelength + "nm.dat";
 	const char *binnedLong_output_file_char = binnedLong_out_str.c_str();
 	const char *binnedShort_output_file_char = binnedShort_out_str.c_str();
 
@@ -269,7 +275,7 @@ void LogBinInterpolate(string path_str, string flag, string ion, string waveleng
 	// This algorithm is designed to fill the empty bins created in the
 	// previous binning algorithm.
 	/**************************************************************************/
-
+	/*
 	// short trajectories
 	int jprev = 0; // jprev and j are used to denote filled bins with machine-zero between them
 	int j = 0;
@@ -295,17 +301,17 @@ void LogBinInterpolate(string path_str, string flag, string ion, string waveleng
 				else{
 					j=j-1; // if j index is larger than shortbin size, go back one step
 				}
-				/* calculate log-log point 1 */
+				// calculate log-log point 1 
 				double etmp1 = log(shortbin[jprev][0]);
 				double ytmp1 = log(shortbin[jprev][1]);
-				/* calculate log-log point 2 */
+				// calculate log-log point 2 
 				double etmp2 = log(shortbin[j][0]);
 				double ytmp2 = log(shortbin[j][1]);
-				/*calculate rate of change */
+				// calculate rate of change 
 				double m = (ytmp2-ytmp1)/(etmp2-etmp1);
-				/*calculate constant term */
+				// calculate constant term 
 				double b = ytmp2 - m*etmp2;
-				/* calculate intermediary points between i and j. If there aren't any, than this loop is skipped*/
+				// calculate intermediary points between i and j. If there aren't any, than this loop is skipped
 				for(int k=jprev+1; k<j; k++){
 					shortbin[k][1] = exp(b + m*log(shortbin[k][0]));
 				}
@@ -321,17 +327,17 @@ void LogBinInterpolate(string path_str, string flag, string ion, string waveleng
 				}
 				else{ // This is in the event a non-machine-zero bin is found with zeros between it and the last known filled bin (jprev)
 					j=i; // set j to current i.
-					/* calculate log point 1 */
+					// calculate log point 1 
 					double etmp1 = log(shortbin[jprev][0]);
 					double ytmp1 = log(shortbin[jprev][1]);
-					/* calculate log point 2 */
+					// calculate log point 2 
 					double etmp2 = log(shortbin[j][0]);
 					double ytmp2 = log(shortbin[j][1]);
-					/*calculate rate of change */
+					// calculate rate of change 
 					double m = (ytmp2-ytmp1)/(etmp2-etmp1);
-					/*calculate constant term */
+					// calculate constant term 
 					double b = ytmp2 - m*etmp2;
-					/* calculate intermediary points between jprev and j*/
+					// calculate intermediary points between jprev and j
 					for(int k=jprev+1; k<j; k++){
 						shortbin[k][1] = exp(b + m*log(shortbin[k][0]));
 					}
@@ -372,17 +378,17 @@ void LogBinInterpolate(string path_str, string flag, string ion, string waveleng
 				else{
 					j=j-1; // if j index is larger than shortbin size, go back one step
 				}
-				/* calculate log point 1 */
+				// calculate log point 1 
 				double etmp1 = log(longbin[jprev][0]);
 				double ytmp1 = log(longbin[jprev][1]);
-				/* calculate log point 2 */
+				// calculate log point 2 
 				double etmp2 = log(longbin[j][0]);
 				double ytmp2 = log(longbin[j][1]);
-				/*calculate rate of change */
+				// calculate rate of change 
 				double m = (ytmp2-ytmp1)/(etmp2-etmp1);
-				/*calculate constant term */
+				// calculate constant term 
 				double b = ytmp2 - m*etmp2;
-				/* calculate intermediary points between i and j*/
+				// calculate intermediary points between i and j
 				for(int k=jprev+1; k<j; k++){
 					longbin[k][1] = exp(b + m*log(longbin[k][0]));
 				}
@@ -398,17 +404,17 @@ void LogBinInterpolate(string path_str, string flag, string ion, string waveleng
 				}
 				else{ // This is in the event a non-machine-zero bin is found with zeros between it and the last known filled bin (jprev)
 					j=i; // set j to current i.
-					/* calculate log point 1 */
+					// calculate log point 1 
 					double etmp1 = log(longbin[jprev][0]);
 					double ytmp1 = log(longbin[jprev][1]);
-					/* calculate log point 2 */
+					// calculate log point 2 
 					double etmp2 = log(longbin[j][0]);
 					double ytmp2 = log(longbin[j][1]);
-					/*calculate rate of change */
+					// calculate rate of change 
 					double m = (ytmp2-ytmp1)/(etmp2-etmp1);
-					/*calculate constant term */
+					// calculate constant term 
 					double b = ytmp2 - m*etmp2;
-					/* calculate intermediary points between jprev and j*/
+					// calculate intermediary points between jprev and j
 					for(int k=jprev+1; k<j; k++){
 						longbin[k][1] = exp(b + m*log(longbin[k][0]));
 					}
@@ -423,28 +429,29 @@ void LogBinInterpolate(string path_str, string flag, string ion, string waveleng
 	} // end long trajectories while loop
 
 
-	/*generate interpolate output file */
-	string interpolateLong_out_str = "Z=" + Z + "_interpolate_Long" + flag + "+" + ion + "_" + wavelength + "nm.dat";
-	string interpolateShort_out_str = "Z=" + Z + "_interpolate_Short" + flag + "+" + ion + "_" + wavelength + "nm.dat";
+	// generate interpolate output file 
+	string interpolateLong_out_str = "binning_output/Z=" + Z + "_interpolate_Long" + flag + "+" + ion + "_" + wavelength + "nm.dat";
+	string interpolateShort_out_str = "binning_output/Z=" + Z + "_interpolate_Short" + flag + "+" + ion + "_" + wavelength + "nm.dat";
 	const char *interpolateLong_output_file_char = interpolateLong_out_str.c_str();
 	const char *interpolateShort_output_file_char = interpolateShort_out_str.c_str();
 
 	longfile.open(interpolateLong_output_file_char);
 	shortfile.open(interpolateShort_output_file_char);
 
-	/* create title columns */
+	// create title columns 
 	longfile << "E" << " " << "dF_R/dE" << endl;
 	shortfile << "E" << " " << "dF_R/dE" << endl;
 
-	/* output interpolated calculation */
+	// output interpolated calculation 
 	for(i=0;i<int(shortbin.size());i++){ // Developers note: This could also be longbin.size(). Post-binning they are the same size.
 		longfile << longbin[i][0] << " " << longbin[i][1] << endl;
 		shortfile << shortbin[i][0] << " " << shortbin[i][1] << endl;
 	}
 	longfile.close();
 	shortfile.close();
-
+	*/
 }
+
 
 // This subroutine calculates log-spaced bins and averages the flux within them.
 void LinearBin(string path_str, string flag, string ion, string wavelength, string Z, double LinStepSize_input, int LinSteps_input){
@@ -607,8 +614,8 @@ void LinearBin(string path_str, string flag, string ion, string wavelength, stri
 
 
 	/*generate bin output file */
-	string binnedLong_out_str =  "Z=" + Z + "_binned_Long" + flag + "+" + ion + "_" + wavelength + "nm.dat";
-	string binnedShort_out_str =  "Z=" + Z + "_binned_Short" + flag + "+" + ion + "_" + wavelength + "nm.dat";
+	string binnedLong_out_str =  "binning_output/Z=" + Z + "_linear_binned_Long" + flag + "+" + ion + "_" + wavelength + "nm.dat";
+	string binnedShort_out_str =  "binning_output/Z=" + Z + "_linear_binned_Short" + flag + "+" + ion + "_" + wavelength + "nm.dat";
 	const char *binnedLong_output_file_char = binnedLong_out_str.c_str();
 	const char *binnedShort_output_file_char = binnedShort_out_str.c_str();
 

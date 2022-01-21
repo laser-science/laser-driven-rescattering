@@ -41,11 +41,11 @@ int main()
 {
 	/*generate input file name&path*/
 	string path_str;
-	path_str="C:/Users/Evan/source/repos/LaserDrivenRescattering/x64/Release/"; /* Put here the path to the folder your input data is in */
+	path_str="cutoff_output/"; /* Put here the path to the folder your input data is in */
 
 	/*generate input file*/
 	string file_str;
-	for (int i = 19; i <= 19; i++) /* The range i runs through should be the range of indexes from your input files. *
+	for (int i = 0; i <= 53; i++) /* The range i runs through should be the range of indexes from your input files. *
 	 	 	 	 	 	 	 	   * This is the first integer which appears in the file name after the element.    *
 	 	 	 	 	 	 	 	   * If only one charge is desired, set the start i and final i to the file index.  */
 	{
@@ -69,7 +69,7 @@ int main()
 void procMean(string file_str, string flag, string ion, string wavelength, string Z) {
 
 	/*generate output file and title columns */
-	string out_str = "Z=" + Z + "_out_" + flag + "+" + ion + "_" + wavelength + "nm.dat";
+	string out_str = "getflux_output/Z=" + Z + "_out_" + flag + "+" + ion + "_" + wavelength + "nm.dat";
 	const char *output_file_char = out_str.c_str();
 	ofstream output(output_file_char, ios::out);
 	output << "release_phase" << " "
@@ -216,8 +216,8 @@ void procMean(string file_str, string flag, string ion, string wavelength, strin
 	/*normalize and output dF_R/dE by long and short trajectories*/
 
 	/*generate output file for long and short trajectories*/
-	string normLong_out_str = "Z=" + Z + "_norm_Long" + flag + "+" + ion + "_" + wavelength + "nm.dat";
-	string normShort_out_str = "Z=" + Z + "_norm_Short" + flag + "+" + ion + "_" + wavelength + "nm.dat";
+	string normLong_out_str = "getflux_output/Z=" + Z + "_norm_Long" + flag + "+" + ion + "_" + wavelength + "nm.dat";
+	string normShort_out_str = "getflux_output/Z=" + Z + "_norm_Short" + flag + "+" + ion + "_" + wavelength + "nm.dat";
 	const char *normLong_output_file_char = normLong_out_str.c_str();
 	const char *normShort_output_file_char = normShort_out_str.c_str();
     

@@ -246,7 +246,7 @@ const int l[Z] = { // angular quantum number for each charge of desired species
 const double intensityVect[Z] = { /*Desired laser intensity for each charge state in W/cm^2. Set to zero if the corresponding ion charge is not desired.
 									Typically full chamber saturation intensities are used, which can be calculated theoretically using ADK rate
 									population in a laser pulse (see LaserIonizationYield code in LaserScience repository).*/
-		/*2.3e14,
+		2.3e14,
 		4.9e14,
 		9.3e14,
 		1.7e15,
@@ -265,27 +265,7 @@ const double intensityVect[Z] = { /*Desired laser intensity for each charge stat
 		5.7e17,
 		7.5e17,
 		1.5e18,
-		1.8e18,*/
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,
-		1.8e18/*
+		1.8e18,
 		2e18,
 		2.3e18,
 		2.8e18,
@@ -319,7 +299,7 @@ const double intensityVect[Z] = { /*Desired laser intensity for each charge stat
 		1.3e22,
 		1.65e22,
 		1.7e24,
-		2.2e24*/
+		2.2e24
 };
 
 /*These are random seeds associated with the random number generators utilized in the code.
@@ -508,12 +488,24 @@ int start(int ion){
 
 	/*output declare*/
 	/*This names the files based on ion index and ionization number*/
-	string file_str_Log = "Z=" + getStringFromNumber(Z) + "_log_" + getStringFromNumber(n_job) + "+" + getStringFromNumber(ionNum[n_job]) + "_" + getStringFromNumber(wavelength_nm) + "nm.txt";
-	string file_str_Data = "Z=" + getStringFromNumber(Z) + "_data_" + getStringFromNumber(n_job)  + "+" + getStringFromNumber(ionNum[n_job]) + "_" + getStringFromNumber(wavelength_nm) + "nm.dat";
+	string file_str_Log = "cutoff_output/Z=" + getStringFromNumber(Z) + "_log_" + getStringFromNumber(n_job) + "+" + getStringFromNumber(ionNum[n_job]) + "_" + getStringFromNumber(wavelength_nm) + "nm.txt";
+	string file_str_Data = "cutoff_output/Z=" + getStringFromNumber(Z) + "_data_" + getStringFromNumber(n_job)  + "+" + getStringFromNumber(ionNum[n_job]) + "_" + getStringFromNumber(wavelength_nm) + "nm.dat";
 	const char *file_char_Log = file_str_Log.c_str();
 	const char *file_char_Data = file_str_Data.c_str();
 	ofstream outLog(file_char_Log, ios::out);
 	ofstream outData(file_char_Data, ios::out);
+	if (!outLog) {
+		cout << "Could not open directory 'cutoff_output'. Make sure you create the directory" << endl;
+		cout << "'cutoff_output' and place it in same directory as the executable." << endl;
+		system("pause");
+		exit(1);
+	};
+	if (!outData) {
+		cout << "Could not open directory 'cutoff_output'. Make sure you have created the directory" << endl;
+		cout << "'cutoff_output' and place it in same directory as the executable." << endl;
+		system("pause");
+		exit(1);
+	};
 
 	/*set time domain parameters*/
 	double t_delta = period/4.0/BirthSteps; /* Time step for birth phase. Divides the period of the drive laser by 4 (quarter cycle), then divides that time by the
