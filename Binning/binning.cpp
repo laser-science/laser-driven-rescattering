@@ -56,7 +56,7 @@ int main()
 		logbin = true; // Select if log binning or linear binning is to be performed
 		Steps = 0; // Select the number of bin steps desired per ion. This separates the minimum and maximum energy per ion by the given number of steps.
 		/* OR if log binning */
-		logStepFactor = 1.10; /*input the log step increase factor in binning desired. i.e., if you want energy bins separated by a factor of two, input "2".
+		logStepFactor = 1.25; /*input the log step increase factor in binning desired. i.e., if you want energy bins separated by a factor of two, input "2".
 		 	 	 	 	 	* This will be the same across all ions. Note that the factor must be greater than one. */
 		/* OR if linear binning */
 		linearStepSize = 10; /*input the linear step size in binning desired */
@@ -128,12 +128,6 @@ void LogBinInterpolate(string path_str, string flag, string ion, string waveleng
 	double E_min=1e150, E_max=0;
 	while(input_long >> d0 >> d1)/* Read in long trajectories*/
 	{
-		if (isdigit(d1) == false) {
-			cout << "Error: A non-numerical value was found in " + file_str_long << endl;
-			cout << "Ion number" + ion + " will be not be binned." << endl;
-			system("pause");
-			return;
-		}
 		if(d0<E_min){
 			E_min = d0;
 		}
@@ -450,6 +444,9 @@ void LogBinInterpolate(string path_str, string flag, string ion, string waveleng
 	longfile.close();
 	shortfile.close();
 	*/
+
+	/*Print to command prompt that ion is compelete */
+	cout << "Ion charge " + ion + " complete" << endl;
 }
 
 
@@ -635,6 +632,8 @@ void LinearBin(string path_str, string flag, string ion, string wavelength, stri
 	longfile.close();
 	shortfile.close();
 
+	/*Print to command prompt that ion is compelete */
+	cout << "Ion charge " + ion + " complete" << endl;
 }
 
 

@@ -761,8 +761,7 @@ void Derivs(double tgot,double ygot[neq],double ypgot[neq]){
 																					  equations are lengthy and difficult to work with. This form can be obtained
 																					  by using the relativistic definition of energy and momentum, and the
 																					  momentum-energy relation. */
-
-																					  //define equation of motion - relativistic
+	//define equation of motion - relativistic
 
 	ypgot[3] = ygot[0]/(me*gamma); // dx/dt = vx = px/(m0*gamma)
 	ypgot[4] = ygot[1]/(me*gamma); // dy/dt = vy = py/(m0*gamma)

@@ -172,9 +172,8 @@ void procMean(string file_str, string flag, string ion, string wavelength, strin
 	} /* end of while loop */
 
 
-	/* close input and print to command prompt*/
+	/* close input */
 	input.close();
-	cout << "End of read in file >> " + file_str << endl;
 
 	/*get rescattering flux per rescattering kinetic energy (dF_R/dE) and add it to each vector in datas*/
 	datas[0].push_back(datas[0][9]/abs(datas[1][8]-datas[0][8])); // First entry is outside the loop to prevent selecting "datas[i][8]" with a negative integer
@@ -228,17 +227,36 @@ void procMean(string file_str, string flag, string ion, string wavelength, strin
 	shortfile << "E" << " " << "norm_dF_R/dE" << endl;
 	/* This for loop writes the long and short trajectories to their respective files */
 	for(int i = 0; i < int(longtraj.size()) + int(shorttraj.size()); i++){
-		if(i < int(longtraj.size())){
+		if (i < int(longtraj.size())) {
+			// Check if output is numeric before continuing
+			if (isnan(longtraj[i][1] / ADK_dt_sum)) {
+				cout << "Warning: A non-numeric long trajectory flux was computed for ion charge " + ion + ". Substituing with zero." << endl;
+				system("pause");
+				longfile << longtraj[i][0] << " " << 0 << endl;
+			}
+			else {
 			longfile << longtraj[i][0] << " " << longtraj[i][1] / ADK_dt_sum << endl;
+			}
 		}
 		else{
+			// Check if output is numeric before continuing
+			if (isnan(shorttraj[(int(shorttraj.size()) - 1) - (i - int(longtraj.size()))][1] / ADK_dt_sum)) {
+				cout << "Warning: A non-numeric short trajectory flux was computed for ion charge " + ion + ". Substituing with zero." << endl;
+				system("pause");
+				shortfile << shorttraj[(int(shorttraj.size()) - 1) - (i - int(longtraj.size()))][0] << " " << 0 << endl;
+			}
 			/* The lengthy argument calls each element of the shorttraj vector but in reverse so that the output is increasing in energy */
-			shortfile << shorttraj[(int(shorttraj.size())-1) - (i-int(longtraj.size()))][0] << " "
-					<< shorttraj[(int(shorttraj.size())-1) - (i-int(longtraj.size()))][1] / ADK_dt_sum << endl;
+			else {
+				shortfile << shorttraj[(int(shorttraj.size()) - 1) - (i - int(longtraj.size()))][0] << " "
+					<< shorttraj[(int(shorttraj.size()) - 1) - (i - int(longtraj.size()))][1] / ADK_dt_sum << endl;
+			}
 		}
 	}/*end for loop*/
 	longfile.close();
 	shortfile.close();
+
+	/*Print to command prompt that ion is compelete */
+	cout << "Ion charge " + ion + " complete" << endl;
 
 	/*end of the subroutine*/
 	return;
