@@ -256,8 +256,12 @@ void LogBinInterpolate(string path_str, string flag, string ion, string waveleng
 
 	/* output binned calculation */
 	for(i=0;i<int(shortbin.size());i++){ // This could also be longbin.size(). Post-binning they are the same size.
-		longfile << longbin[i][0] << " " << longbin[i][1] << endl;
-		shortfile << shortbin[i][0] << " " << shortbin[i][1] << endl;
+		if (longbin[i][1] > 0.0) { // This conditional prevents writing empty bins to the outfile
+			longfile << longbin[i][0] << " " << longbin[i][1] << endl;
+		}
+		if (shortbin[i][1] > 0.0) {
+			shortfile << shortbin[i][0] << " " << shortbin[i][1] << endl;
+		}
 	}
 	longfile.close();
 	shortfile.close();
