@@ -471,7 +471,7 @@ int start(int ion){
 	double hstart = 0.0; //Gives control of choosing initial integration point
 	int method = 2; //Method 2 is most efficient, medium-error
 	char jobtype = 'U';
-	char* jobpointer = &(jobtype); // "&" operator points to the location of "jobtype" in memory. RKsuite only takes pointers to characters.
+	char* jobpointer = &(jobtype); // RKsuite only takes pointers to characters.
 	int uflag; //For error flagging
 	bool mesage = false;
 	bool errass = false;
