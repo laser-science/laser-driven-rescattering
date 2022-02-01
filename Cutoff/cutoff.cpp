@@ -634,20 +634,19 @@ void GetInitial(const double t,const double zz,const double ip,const int nSample
 	/*declare random generator*/
 	Ran myran(seed);
 
-	/*declare intermediate variables*/
-	double angRange = 360.0;
-	double del,delP,angle;
+	/*declare spatial and momentum variables*/
+	double delz,dely,delPz,delPy;
 
 	for (int i = 0; i < nSample; i++){
-		del = abs(ng1.dev()); // E: This is a random sample from the distribution
-		angle = angRange*myran.doub(); // This takes a random number between zero and one and multiplies it by 360 degrees
-		iniY->push_back(del*cos(angle/180.0*pi));
-		iniZ->push_back(del*sin(angle/180.0*pi));
+		delz = ng1.dev(); // This is a random sample from the z distribution
+		dely = ng1.dev(); // This is a random sample from the y distribution
+		iniZ->push_back(delz);
+		iniY->push_back(dely);
 
-		delP = abs(ng2.dev());
-		angle = angRange*myran.doub();
-		iniPy->push_back(delP*cos(angle/180.0*pi));
-		iniPz->push_back(delP*sin(angle/180.0*pi));
+		delPz = ng2.dev();
+		delPy = ng2.dev();
+		iniPz->push_back(delPz); // This is a random sample from the momentum distribution in z
+		iniPy->push_back(delPy); // This is a random sample from the momentum distribution in y
 	}
 
 	/*end of function*/
