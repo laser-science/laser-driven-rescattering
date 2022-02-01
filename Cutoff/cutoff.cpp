@@ -57,7 +57,7 @@ const double pi = 4.0*atan(1.0);
 const double int_au = 6.43640931e15;
 
 // wavelength of drive laser
-const double wavelength_nm = 800; // Input wavelength here in nanometers
+const double wavelength_nm = 409; // Input wavelength here in nanometers
 const double wavelength = wavelength_nm*18.897; // Conversion to atomic units (do not change)
 
 // frequency of drive laser
@@ -70,7 +70,7 @@ const double period = wavelength/c;
 const int neq = 6;
 
 /*Define atomic number, ion charges, ionization potentials, angular quantum number (l), and desired laser intensities (W/cm^2 input)*/
-const int Z = 18; // atomic number of desired species calculated
+const int Z = 36; // atomic number of desired species calculated
 
 const int ionNum[Z] = { // all possible ion charges for desired species from +1 to +Z
 		1,
@@ -94,7 +94,15 @@ const int ionNum[Z] = { // all possible ion charges for desired species from +1 
 };
 
 const double ip[Z] = { // ionization potential for each charge of desired species; taken from NIST (https://physics.nist.gov/PhysRefData/ASD/ionEnergy.html)
-	0.5794,
+	0.0,
+	0.0,
+	0.0,
+	0.0,
+	0.0,
+	0.0,
+	0.0,
+	4.625
+	/*0.5794,
 	1.0158,
 	1.49761,
 	2.19044,
@@ -111,34 +119,50 @@ const double ip[Z] = { // ionization potential for each charge of desired specie
 	31.45221,
 	33.76379,
 	151.49506,
-	162.72878
+	162.72878*/
 };
 
 const int l[Z] = { // angular quantum number for each charge of desired species
-	1,
-	1,
-	1,
-	1,
-	1,
-	1,
 	0,
 	0,
-	1,
-	1,
-	1,
-	1,
-	1,
-	1,
+	0,
+	0,
 	0,
 	0,
 	0,
 	0
+	/*1,
+	1,
+	1,
+	1,
+	1,
+	1,
+	0,
+	0,
+	1,
+	1,
+	1,
+	1,
+	1,
+	1,
+	0,
+	0,
+	0,
+	0*/
 };
 
 const double intensityVect[Z] = { /*Desired laser intensity for each charge state in W/cm^2. Set to zero if the corresponding ion charge is not desired.
 									Typically full chamber saturation intensities are used, which can be calculated theoretically using ADK rate
 									population in a laser pulse (see LaserIonizationYield code in LaserScience repository).*/
-		6.3e14,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		2.2e17
+		/*6.3e14,
 		1.5e15,
 		3.5e15,
 		7.9e15,
@@ -155,7 +179,7 @@ const double intensityVect[Z] = { /*Desired laser intensity for each charge stat
 		1.4e19,
 		2.2e19,
 		2.8e21,
-		4e21
+		4e21*/
 };
 
 /*These are random seeds associated with the random number generators utilized in the code.
@@ -183,10 +207,10 @@ const int seedVect[Z] =
 };
 
 /* Number of monte-carlo generated trajectories sampled to form the wave packet */
-int nSample = 100;
+int nSample = 1000;
 
 /*Time steps for initial ionization phase (birth phase) of laser cycle*/
-int BirthSteps = 500;
+int BirthSteps = 100;
 
 /*These are the initial time steps used to find the x-axis. Leave this at around 100.*/
 int TrajSteps = 200;
@@ -625,7 +649,7 @@ void GetInitial(const double t,const double zz,const double ip,const int nSample
 	GetEmField(t, zz, e_cpn, eff);
 
 	/*calculate the spatial uncertainty width derived from 10.1103/PhysRevA.74.033403 */
-	double yz_width = sqrt(hb/(e*me))*(pow(2.0*ip,0.25))/sqrt(2.0*abs(e_cpn[0]));
+	double yz_width = sqrt(hb/(e*me))*(pow(2.0*ip,0.25))/sqrt(2.0*abs(e_cpn[0])); 
 
 	/*declare normal distribution generator*/
 	Normaldev ng1(0.0,yz_width,seed); // Spacial distribution
