@@ -35,7 +35,7 @@ int main()
 
 	/*generate input file*/
 	string file_str;
-	for (int i = 0; i <= 53; i++) /* The range i runs through should be the range of indexes from your input files. *
+	for (int i = 0; i <= 17; i++) /* The range i runs through should be the range of indexes from your input files. *
 								   * This is the first integer which appears in the file name after the element.    *
 								   * If only one charge is desired, set the start i and final i to the file index.  */
 	{
@@ -45,7 +45,7 @@ int main()
 		bool logbin;
 		ind << i; //ind will be the index value currently being called
 		ion << i+1; //ion will be the ion currently being called - for us this was usually 1 greater than the index as we would run ions from 1+ to some maximum
-		Z << 54; //input the atomic number of the species calculated
+		Z << 18; //input the atomic number of the species calculated
 		wavelength << 800; //input the wavelength you're running
 
 		/*********************************************************************************************************/
@@ -256,16 +256,18 @@ void LogBinInterpolate(string path_str, string flag, string ion, string waveleng
 
 	/* output binned calculation */
 	for(i=0;i<int(shortbin.size());i++){ // This could also be longbin.size(). Post-binning they are the same size.
-		/*
+		
 		if (longbin[i][1] > 0.0) { // This conditional prevents writing empty bins to the outfile
 			longfile << longbin[i][0] << " " << longbin[i][1] << endl;
 		}
 		if (shortbin[i][1] > 0.0) {
 			shortfile << shortbin[i][0] << " " << shortbin[i][1] << endl;
 		}
-		*/
+		
+		/*
 		longfile << longbin[i][0] << " " << longbin[i][1] << endl;
 		shortfile << shortbin[i][0] << " " << shortbin[i][1] << endl;
+		*/
 	}
 	longfile.close();
 	shortfile.close();

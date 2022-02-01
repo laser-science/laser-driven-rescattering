@@ -9,7 +9,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Getflux", "Getflux\Getflux.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Binning", "Binning\Binning.vcxproj", "{F4EC89A5-38CA-4F87-AD86-D77949782DEC}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BremTest", "BremTest\BremTest.vcxproj", "{87EC1EC2-E654-44A2-9AF3-96C64E320DAF}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RadiationCross-section", "RadiationCross-section\RadiationCross-section.vcxproj", "{DB26BBCC-8399-4D3E-8589-04AE78B4388C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -43,14 +43,14 @@ Global
 		{F4EC89A5-38CA-4F87-AD86-D77949782DEC}.Release|x64.Build.0 = Release|x64
 		{F4EC89A5-38CA-4F87-AD86-D77949782DEC}.Release|x86.ActiveCfg = Release|Win32
 		{F4EC89A5-38CA-4F87-AD86-D77949782DEC}.Release|x86.Build.0 = Release|Win32
-		{87EC1EC2-E654-44A2-9AF3-96C64E320DAF}.Debug|x64.ActiveCfg = Debug|x64
-		{87EC1EC2-E654-44A2-9AF3-96C64E320DAF}.Debug|x64.Build.0 = Debug|x64
-		{87EC1EC2-E654-44A2-9AF3-96C64E320DAF}.Debug|x86.ActiveCfg = Debug|Win32
-		{87EC1EC2-E654-44A2-9AF3-96C64E320DAF}.Debug|x86.Build.0 = Debug|Win32
-		{87EC1EC2-E654-44A2-9AF3-96C64E320DAF}.Release|x64.ActiveCfg = Release|x64
-		{87EC1EC2-E654-44A2-9AF3-96C64E320DAF}.Release|x64.Build.0 = Release|x64
-		{87EC1EC2-E654-44A2-9AF3-96C64E320DAF}.Release|x86.ActiveCfg = Release|Win32
-		{87EC1EC2-E654-44A2-9AF3-96C64E320DAF}.Release|x86.Build.0 = Release|Win32
+		{DB26BBCC-8399-4D3E-8589-04AE78B4388C}.Debug|x64.ActiveCfg = Debug|x64
+		{DB26BBCC-8399-4D3E-8589-04AE78B4388C}.Debug|x64.Build.0 = Debug|x64
+		{DB26BBCC-8399-4D3E-8589-04AE78B4388C}.Debug|x86.ActiveCfg = Debug|Win32
+		{DB26BBCC-8399-4D3E-8589-04AE78B4388C}.Debug|x86.Build.0 = Debug|Win32
+		{DB26BBCC-8399-4D3E-8589-04AE78B4388C}.Release|x64.ActiveCfg = Release|x64
+		{DB26BBCC-8399-4D3E-8589-04AE78B4388C}.Release|x64.Build.0 = Release|x64
+		{DB26BBCC-8399-4D3E-8589-04AE78B4388C}.Release|x86.ActiveCfg = Release|Win32
+		{DB26BBCC-8399-4D3E-8589-04AE78B4388C}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

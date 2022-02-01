@@ -45,7 +45,7 @@ int main()
 
 	/*generate input file*/
 	string file_str;
-	for (int i = 0; i <= 53; i++) /* The range i runs through should be the range of indexes from your input files. *
+	for (int i = 0; i <= 17; i++) /* The range i runs through should be the range of indexes from your input files. *
 	 	 	 	 	 	 	 	   * This is the first integer which appears in the file name after the element.    *
 	 	 	 	 	 	 	 	   * If only one charge is desired, set the start i and final i to the file index.  */
 	{
@@ -53,7 +53,7 @@ int main()
 		ind << i; //ind will be the index value currently being called
 		ion << i+1; //ion will be the ion currently being called - for us this was usually 1 greater than the index as we would run ions from 1+ to some maximum
 		wavelength << 800; //input the wavelength you're running
-		Z << 54; //input the atomic number of the species calculated
+		Z << 18; //input the atomic number of the species calculated
 		file_str = path_str + "Z=" + Z.str() + "_data_" + ind.str() + "+" + ion.str() + "_" +  wavelength.str() + "nm.dat";
 		procMean(file_str,ind.str(),ion.str(),wavelength.str(),Z.str());
 	}
