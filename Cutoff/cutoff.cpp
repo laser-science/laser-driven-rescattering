@@ -649,7 +649,7 @@ void GetInitial(const double t,const double zz,const double ip,const int nSample
 	GetEmField(t, zz, e_cpn, eff);
 
 	/*calculate the spatial uncertainty width derived from 10.1103/PhysRevA.74.033403 */
-	double yz_width = sqrt(hb/(e*me))*(pow(2.0*ip,0.25))/sqrt(2.0*abs(e_cpn[0])); 
+	double yz_width = sqrt( (hb / (e * sqrt(2.0 * me))) * sqrt(ip) / abs(e_cpn[0]) );
 
 	/*declare normal distribution generator*/
 	Normaldev ng1(0.0,yz_width,seed); // Spacial distribution
