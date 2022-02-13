@@ -360,6 +360,10 @@ int start(int ion){
 	double a0 = e*eAmpMax/(me*c*omega); // a0 and gamma_R are from the Lorentz force deflection parameter found in "10.1103/PhysRevLett.118.093001"
 	double gamma_R = (sqrt(2.0*ip[n_job]*me*pow(c,2.0))*pow(a0,3.0))/(16.0*hb*omega);
 
+	/*declare time domain variable*/
+	double t_start = 0.0 - t_delta; /*This is the initial phase of the laser phase (birth phase) set to the period/4. The first time step is subtracted off
+											so that the algorithm begins at the birth phase. */
+	double t_final, t_integ_final;
 
 	/*write log of project parameters*/
 	outLog << ">>> wavelength(a.u.) = " << wavelength << endl;
@@ -370,18 +374,13 @@ int start(int ion){
 	outLog << ">>> eAmpMax(a.u.) = " << eAmpMax << endl;
 	outLog << ">>> t_delta(a.u.) = " << t_delta << endl;
 	outLog << ">>> t_integ_delta(a.u.) = " << t_integ_delta << endl;
-	outLog << ">>> range = Pi/2 to Pi" << endl;
+	outLog << ">>> range = " << (t_start + t_delta) / period * 2 * pi << " to " << (BirthSteps * t_delta) / period * 2 * pi << " rad" << endl;
 	outLog << ">>> Ion Number: " << ion << endl;
 	outLog << ">>> Gamma_r: " << gamma_R << endl;
 
 	/*write title of rescatter data*/
 	outData << "birth_phase" << " "	<< "adk_rate_dt" << " " << "return_phase" << " " << "ini_X" << " " << "ini_Y" << " " 
 		<< "ini_Z" << " " << "res_X" << " " << "res_Y" << " " << "res_Z" << " " << "return_kin" << endl;
-
-	/*declare time domain variable*/
-	double t_start = 0.0 - t_delta; /*This is the initial phase of the laser phase (birth phase) set to the period/4. The first time step is subtracted off
-											so that the algorithm begins at the birth phase. */
-	double t_final, t_integ_final;
 
 	/*Begin loop over every birth phase (outer loop)*/
 	for(int pp = 0; pp < BirthSteps; pp++){
@@ -647,6 +646,7 @@ void GetEmField(const double t,const double zz,double* e_cpn,double& eff){
 	e_cpn[2] = 0.0;
 	e_cpn[3] = 0.0;
 	e_cpn[4] = e_cpn[0]/c; // Magnetic field is directed in the +y-axis and is equal to E/c
+	e_cpn[4] = 0.0;
 	e_cpn[5] = 0.0;
 	/*end of subroutine*/
 }

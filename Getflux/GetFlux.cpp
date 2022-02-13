@@ -45,15 +45,15 @@ int main()
 
 	/*generate input file*/
 	string file_str;
-	for (int i = 0; i <= 17; i++) /* The range i runs through should be the range of indexes from your input files. *
+	for (int i = 7; i <= 7; i++) /* The range i runs through should be the range of indexes from your input files. *
 	 	 	 	 	 	 	 	   * This is the first integer which appears in the file name after the element.    *
 	 	 	 	 	 	 	 	   * If only one charge is desired, set the start i and final i to the file index.  */
 	{
 		stringstream ind,ion,wavelength,Z;
 		ind << i; //ind will be the index value currently being called
 		ion << i+1; //ion will be the ion currently being called - for us this was usually 1 greater than the index as we would run ions from 1+ to some maximum
-		wavelength << 800; //input the wavelength you're running
-		Z << 18; //input the atomic number of the species calculated
+		wavelength << 409; //input the wavelength you're running
+		Z << 36; //input the atomic number of the species calculated
 		file_str = path_str + "Z=" + Z.str() + "_data_" + ind.str() + "+" + ion.str() + "_" +  wavelength.str() + "nm.dat";
 		procMean(file_str,ind.str(),ion.str(),wavelength.str(),Z.str());
 	}
@@ -231,7 +231,7 @@ void procMean(string file_str, string flag, string ion, string wavelength, strin
 			// Check if output is numeric before continuing
 			if (isnan(longtraj[i][1] / ADK_dt_sum)) {
 				cout << "Warning: A non-numeric long trajectory flux was computed for ion charge " + ion + ". Substituing with zero." << endl;
-				system("pause");
+				//system("pause");
 				longfile << longtraj[i][0] << " " << 0 << endl;
 			}
 			else {
@@ -242,7 +242,7 @@ void procMean(string file_str, string flag, string ion, string wavelength, strin
 			// Check if output is numeric before continuing
 			if (isnan(shorttraj[(int(shorttraj.size()) - 1) - (i - int(longtraj.size()))][1] / ADK_dt_sum)) {
 				cout << "Warning: A non-numeric short trajectory flux was computed for ion charge " + ion + ". Substituing with zero." << endl;
-				system("pause");
+				//system("pause");
 				shortfile << shorttraj[(int(shorttraj.size()) - 1) - (i - int(longtraj.size()))][0] << " " << 0 << endl;
 			}
 			/* The lengthy argument calls each element of the shorttraj vector but in reverse so that the output is increasing in energy */
