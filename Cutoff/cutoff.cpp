@@ -207,10 +207,10 @@ const int seedVect[Z] =
 };
 
 /* Number of monte-carlo generated trajectories sampled to form the wave packet */
-int nSample = 1000;
+int nSample = 100;
 
 /*Time steps for initial ionization phase (birth phase) of laser cycle*/
-int BirthSteps = 100;
+int BirthSteps = 400;
 
 /*These are the initial time steps used to find the x-axis. Leave this at around 100.*/
 int TrajSteps = 200;
@@ -352,7 +352,7 @@ int start(int ion){
 	};
 
 	/*set time domain parameters*/
-	double t_delta = period/4.0/BirthSteps; /* Time step for birth phase. Divides the period of the drive laser by 4 (quarter cycle), then divides that time by the
+	double t_delta = period/BirthSteps; /* Time step for birth phase. Divides the period of the drive laser by 4 (quarter cycle), then divides that time by the
 												number of birth time steps. */
 	double t_integ_delta = (period/TrajSteps); /* Time step for trajectory calculation. Divides the period of the drive laser by the number of trajectory time steps. */
 
@@ -379,7 +379,7 @@ int start(int ion){
 		<< "ini_Z" << " " << "res_X" << " " << "res_Y" << " " << "res_Z" << " " << "return_kin" << endl;
 
 	/*declare time domain variable*/
-	double t_start = period/4.0-t_delta; /*This is the initial phase of the laser phase (birth phase) set to the period/4. The first time step is subtracted off
+	double t_start = 0.0 - t_delta; /*This is the initial phase of the laser phase (birth phase) set to the period/4. The first time step is subtracted off
 											so that the algorithm begins at the birth phase. */
 	double t_final, t_integ_final;
 
@@ -522,6 +522,20 @@ int start(int ion){
 				/*end of trajectory integration*/
 			}
 
+			// This prints ADK rate and Birth phase in the event rescattering does not occur
+			if (twant > t_final) {
+				outData << t_start / period * 2.0 * pi << " "
+					<< rate_adk * t_delta << " " // This output is the ADK rate times the birth phase time delta. This simplifies computation in the PostProcess code.
+					<< 0 << " "
+					<< 0 << " "
+					<< 0 << " "
+					<< 0 << " "
+					<< 0 << " "
+					<< 0 << " "
+					<< 0 << " "
+					<< 0 << endl;
+			}
+
 			/*end of loop through all trajecotries*/
 		}
 
@@ -575,10 +589,10 @@ double GetADK(const double ip,const int ionNumber,const int l,const double y[neq
 		lstar = nstar - 1.0;
 		epsilon = pow(2.0 * ip, 1.5);
 		c2nl = pow(2.0, 2.0 * nstar) / (nstar * tgamma(nstar + lstar + 1.0) * tgamma(nstar - lstar));
-		arg = -2.0 * epsilon / (3.0 * efield); // This is the argument for the exponential factor in the final expression
+		arg = -2.0 * epsilon / (3.0 * abs(efield)); // This is the argument for the exponential factor in the final expression
 
 		/*calculate rate*/
-		rate_adk = c2nl * ip * flm * pow(2.0 * epsilon / efield, nmpower) * exp(arg); // outputs ADK rate in atomic units with the dimension "electrons/time"
+		rate_adk = c2nl * ip * flm * pow(2.0 * epsilon / abs(efield), nmpower) * exp(arg); // outputs ADK rate in atomic units with the dimension "electrons/time"
 	}
 	return rate_adk;
 	/*end of function*/
