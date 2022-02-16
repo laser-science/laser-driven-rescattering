@@ -83,8 +83,8 @@ void PhaseIterator() {
 	vector<vector<vector<double>>> frame1(phaseSteps), frame2(phaseSteps);
 	ofstream outfile;
 	string tmp;
-	double time_stepsize = period / 2.0 / double(phaseSteps);
-	double t = 0;
+	double time_stepsize = period / double(phaseSteps);
+	double t = 0.0;
 	// Begin Iterating over phase steps
 	for (int i = 1; i <= phaseSteps; i++) {
 		t += time_stepsize;
@@ -96,7 +96,7 @@ void PhaseIterator() {
 		frame2.clear();
 		frame2.resize(phaseSteps);
 		// Iterate over all wavepackets (create a new wave packet per frame)
-		for (int j = 1; j <= i; j++) {
+		for (int j = 1; j <= i; j++) {	
 			if (j == i) {
 				wavepacket(t, time_stepsize, true, frame1[j - 1], frame2[j - 1]);
 			}
@@ -153,45 +153,55 @@ void wavepacket(double tstart, double tdelta, bool firststep, vector<vector<doub
 
 void GetInitial(double t, double ip, int nSample, vector<double>* iniX, vector<double>* iniY,
 	vector<double>* iniZ, vector<double>* iniPx, vector<double>* iniPy, vector<double>* iniPz) {
-
-	/*calculate EM field*/
-	double e_cpn[neq], eff;
-	GetEmField(t, e_cpn, eff);
-
-	/*calculate the spatial uncertainty width from the ionized electron tranverse momentum spectrum */
-	double yz_width = sqrt(hb / (2 * e * sqrt(2.0 * me)) * sqrt(ip) / abs(e_cpn[0]));
-
-	/*calculate the spatial uncertainty width from the ionized electron in the direction of polarization momentum spectrum */
-	double gamma_k = freq * sqrt(2 * me * ip) / (e * e_cpn[0]);
-	double x_width = sqrt(hb * pow(gamma_k, 3.0) / (12 * me * freq));
-
-	/*declare normal distribution generator*/
-	normal_distribution<double> zy_position(0.0, yz_width);
-	normal_distribution<double> zy_momentum(0.0, hb * 0.5 / yz_width);
-	normal_distribution<double> x_position(0.0, x_width);
-	normal_distribution<double> x_momentum(0.0, hb * 0.5 / x_width);
-
-	/*declare spatial and momentum variables*/
-	double delx, delz, dely, delPx, delPz, delPy;
-
-	for (int i = 0; i < nSample; i++) {
-		delz = zy_position(generator); // This is a random sample from the z distribution
-		dely = zy_position(generator); // This is a random sample from the y distribution
-		iniZ->push_back(delz);
-		iniY->push_back(dely);
-
-		delPz = zy_momentum(generator);
-		delPy = zy_momentum(generator);
-		iniPz->push_back(delPz); // This is a random sample from the momentum distribution in z
-		iniPy->push_back(delPy); // This is a random sample from the momentum distribution in y
-
-		delx = x_position(generator); // This is a random sample from the x distribution
-		iniX->push_back(delx);
-
-		delPx = x_momentum(generator);
-		iniPx->push_back(delPx);
+	if ((t == 0.0) || (t == period / 2.0) || (t == period)) {
+		for (int i = 0; i < nSample; i++) {
+			iniZ->push_back(0);
+			iniY->push_back(0);
+			iniPz->push_back(0); // This is a random sample from the momentum distribution in z
+			iniPy->push_back(0); // This is a random sample from the momentum distribution in y
+			iniX->push_back(0);
+			iniPx->push_back(0);
+		}
 	}
+	else {
+		/*calculate EM field*/
+		double e_cpn[neq], eff;
+		GetEmField(t, e_cpn, eff);
 
+		/*calculate the spatial uncertainty width from the ionized electron tranverse momentum spectrum */
+		double yz_width = sqrt(hb / (2 * e * sqrt(2.0 * me)) * sqrt(ip) / abs(e_cpn[0]));
+
+		/*calculate the spatial uncertainty width from the ionized electron in the direction of polarization momentum spectrum */
+		double gamma_k = freq * sqrt(2 * me * ip) / (e * abs(e_cpn[0]));
+		double x_width = sqrt(hb * pow(gamma_k, 3.0) / (12 * me * freq));
+
+		/*declare normal distribution generator*/
+		normal_distribution<double> zy_position(0.0, yz_width);
+		normal_distribution<double> zy_momentum(0.0, hb * 0.5 / yz_width);
+		normal_distribution<double> x_position(0.0, x_width);
+		normal_distribution<double> x_momentum(0.0, hb * 0.5 / x_width);
+
+		/*declare spatial and momentum variables*/
+		double delx, delz, dely, delPx, delPz, delPy;
+
+		for (int i = 0; i < nSample; i++) {
+			delz = zy_position(generator); // This is a random sample from the z distribution
+			dely = zy_position(generator); // This is a random sample from the y distribution
+			iniZ->push_back(delz);
+			iniY->push_back(dely);
+
+			delPz = zy_momentum(generator);
+			delPy = zy_momentum(generator);
+			iniPz->push_back(delPz); // This is a random sample from the momentum distribution in z
+			iniPy->push_back(delPy); // This is a random sample from the momentum distribution in y
+
+			delx = x_position(generator); // This is a random sample from the x distribution
+			iniX->push_back(delx);
+
+			delPx = x_momentum(generator);
+			iniPx->push_back(delPx);
+		}
+	}
 	/*end of function*/
 }
 
@@ -211,9 +221,9 @@ void propagator(double tstart, double tdelta, double yinitial[neq], double ygot[
 	bool mesage = false;
 	bool errass = false;
 	// Setup RKsuite
-	rksuite.setup(neq, tstart, yinitial, tdelta, tol, thres, method, jobpointer, errass, hstart, mesage);
+	rksuite.setup(neq, tstart, yinitial, tstart + tdelta, tol, thres, method, jobpointer, errass, hstart, mesage);
 	// Solve for tdelta
-	rksuite.ut(Derivs, tdelta, tgot, ygot, ypgot, ymax, uflag);
+	rksuite.ut(Derivs, tstart + tdelta, tgot, ygot, ypgot, ymax, uflag);
 }
 
 
