@@ -11,6 +11,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Binning", "Binning\Binning.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RadiationCross-section", "RadiationCross-section\RadiationCross-section.vcxproj", "{DB26BBCC-8399-4D3E-8589-04AE78B4388C}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RescatteringAnimation", "RescatteringAnimation\RescatteringAnimation.vcxproj", "{E63036B5-32C9-4629-BA7F-E02A854C0DC5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -51,6 +53,14 @@ Global
 		{DB26BBCC-8399-4D3E-8589-04AE78B4388C}.Release|x64.Build.0 = Release|x64
 		{DB26BBCC-8399-4D3E-8589-04AE78B4388C}.Release|x86.ActiveCfg = Release|Win32
 		{DB26BBCC-8399-4D3E-8589-04AE78B4388C}.Release|x86.Build.0 = Release|Win32
+		{E63036B5-32C9-4629-BA7F-E02A854C0DC5}.Debug|x64.ActiveCfg = Debug|x64
+		{E63036B5-32C9-4629-BA7F-E02A854C0DC5}.Debug|x64.Build.0 = Debug|x64
+		{E63036B5-32C9-4629-BA7F-E02A854C0DC5}.Debug|x86.ActiveCfg = Debug|Win32
+		{E63036B5-32C9-4629-BA7F-E02A854C0DC5}.Debug|x86.Build.0 = Debug|Win32
+		{E63036B5-32C9-4629-BA7F-E02A854C0DC5}.Release|x64.ActiveCfg = Release|x64
+		{E63036B5-32C9-4629-BA7F-E02A854C0DC5}.Release|x64.Build.0 = Release|x64
+		{E63036B5-32C9-4629-BA7F-E02A854C0DC5}.Release|x86.ActiveCfg = Release|Win32
+		{E63036B5-32C9-4629-BA7F-E02A854C0DC5}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

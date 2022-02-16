@@ -430,7 +430,7 @@ int start(int ion){
 			twant = t_start;
 
 			/*initialize x_pre which is the x position at the beginning of the integration*/
-			x_pre = (y_start[3]-xwant); // TESTESETSETESTSETSE
+			x_pre = (y_start[3]-xwant);
 
 			/*trajectory integration*/
 			/*This while loop integrates until the break is reached or
