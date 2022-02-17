@@ -646,7 +646,6 @@ void GetEmField(const double t,const double zz,double* e_cpn,double& eff){
 	e_cpn[2] = 0.0;
 	e_cpn[3] = 0.0;
 	e_cpn[4] = e_cpn[0]/c; // Magnetic field is directed in the +y-axis and is equal to E/c
-	e_cpn[4] = 0.0;
 	e_cpn[5] = 0.0;
 	/*end of subroutine*/
 }

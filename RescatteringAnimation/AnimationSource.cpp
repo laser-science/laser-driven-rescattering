@@ -40,7 +40,7 @@ const double period = wavelength / c;
 
 
 // intensity of laser
-const double intensity = 2.2e18; // W/cm^2
+const double intensity = 2.2e17; // W/cm^2
 const double int_au = 6.43640931e15; // atomic units to W/cm^2 conversion factor (do not change)
 const double Emag = sqrt((8.0 * pi * (intensity / int_au)) / c); // conversion to atomic units field
 
@@ -52,8 +52,10 @@ const double IP = 4.625; // hartree
 
 // electrons sampled per wavepacket 
 const int nSample = 100;
-// Number of phase steps 
-const int phaseSteps = 10;
+// Number of phase steps
+const int phaseSteps = 40;
+// Number of phase steps per optical cycle
+const int phasepercycle = 20;
 
 
 // Declare subroutines //
@@ -83,13 +85,13 @@ void PhaseIterator() {
 	vector<vector<vector<double>>> frame1(phaseSteps), frame2(phaseSteps);
 	ofstream outfile;
 	string tmp;
-	double time_stepsize = period / double(phaseSteps);
+	double time_stepsize = 2 * period / double(phaseSteps);
 	double t = 0.0;
 	// Begin Iterating over phase steps
 	for (int i = 1; i <= phaseSteps; i++) {
 		t += time_stepsize;
 		// open image data file
-		tmp = "frame" + to_string(i) + ".dat";
+		tmp = "animation_output/frame" + to_string(i) + ".dat";
 		const char* name = tmp.c_str();
 		outfile.open(name);
 		// clear previous frame data
@@ -101,9 +103,13 @@ void PhaseIterator() {
 				wavepacket(t, time_stepsize, true, frame1[j - 1], frame2[j - 1]);
 			}
 			else {
-				wavepacket(t, time_stepsize, false, frame1[j - 1], frame2[j - 1]);
 				//cout << i << endl;
-				//cout << frame2[j - 1].size() << endl;
+				//cout << j << endl;
+				//cout << frame1[j - 1][0][3] << endl;
+				//cout << frame1[j - 1][0][0] << endl;
+				wavepacket(t, time_stepsize, false, frame1[j - 1], frame2[j - 1]);
+				//cout << frame2[j - 1][0][3] << endl;
+				//cout << frame2[j - 1][0][0] << endl;
 				//system("pause");
 			}
 		}
@@ -112,12 +118,13 @@ void PhaseIterator() {
 		for (int j = 1; j <= nSample; j++) {
 			// Loop over all wavepackets (columns)
 			for (int k = 1; k <= i; k++) {
-				// output (x,z) coordinate
-				//cout << frame2.size() << endl;
-				//cout << frame2[k - 1].size() << endl;
-				//cout << frame2[k - 1][j - 1].size() << endl;
-				//system("pause");
-				outfile << frame2[k - 1][j - 1][3] << " " << frame2[k - 1][j - 1][5] << " ";
+				if (((i-k + 1)%phasepercycle == phasepercycle / 2) || ((i - k + 1) % phasepercycle == 0)) {
+					// Skip these columns
+				}
+				else {
+					// output (x,z) coordinate
+					outfile << frame2[i-k][j - 1][3] << " " << frame2[i-k][j - 1][5] << " ";
+				}
 			}
 			outfile << endl;
 		}
@@ -153,7 +160,10 @@ void wavepacket(double tstart, double tdelta, bool firststep, vector<vector<doub
 
 void GetInitial(double t, double ip, int nSample, vector<double>* iniX, vector<double>* iniY,
 	vector<double>* iniZ, vector<double>* iniPx, vector<double>* iniPy, vector<double>* iniPz) {
-	if ((t == 0.0) || (t == period / 2.0) || (t == period)) {
+	/*calculate EM field*/
+	double e_cpn[neq], eff;
+	GetEmField(t, e_cpn, eff);
+	if (/*(t == 0) || (t == period / 2.0) || (t == period)*/abs(eff) < 1e-10) {
 		for (int i = 0; i < nSample; i++) {
 			iniZ->push_back(0);
 			iniY->push_back(0);
@@ -164,10 +174,6 @@ void GetInitial(double t, double ip, int nSample, vector<double>* iniX, vector<d
 		}
 	}
 	else {
-		/*calculate EM field*/
-		double e_cpn[neq], eff;
-		GetEmField(t, e_cpn, eff);
-
 		/*calculate the spatial uncertainty width from the ionized electron tranverse momentum spectrum */
 		double yz_width = sqrt(hb / (2 * e * sqrt(2.0 * me)) * sqrt(ip) / abs(e_cpn[0]));
 
@@ -195,10 +201,10 @@ void GetInitial(double t, double ip, int nSample, vector<double>* iniX, vector<d
 			iniPz->push_back(delPz); // This is a random sample from the momentum distribution in z
 			iniPy->push_back(delPy); // This is a random sample from the momentum distribution in y
 
-			delx = x_position(generator); // This is a random sample from the x distribution
+			delx = zy_position(generator); // This is a random sample from the x distribution
 			iniX->push_back(delx);
 
-			delPx = x_momentum(generator);
+			delPx = zy_momentum(generator);
 			iniPx->push_back(delPx);
 		}
 	}
@@ -221,9 +227,9 @@ void propagator(double tstart, double tdelta, double yinitial[neq], double ygot[
 	bool mesage = false;
 	bool errass = false;
 	// Setup RKsuite
-	rksuite.setup(neq, tstart, yinitial, tstart + tdelta, tol, thres, method, jobpointer, errass, hstart, mesage);
+	rksuite.setup(neq, tstart - tdelta, yinitial, tstart, tol, thres, method, jobpointer, errass, hstart, mesage);
 	// Solve for tdelta
-	rksuite.ut(Derivs, tstart + tdelta, tgot, ygot, ypgot, ymax, uflag);
+	rksuite.ut(Derivs, tstart, tgot, ygot, ypgot, ymax, uflag);
 }
 
 
@@ -239,7 +245,7 @@ void GetEmField(double t, double* e_cpn, double& eff) {
 	e_cpn[2] = 0.0;
 	e_cpn[3] = 0.0;
 	e_cpn[4] = e_cpn[0] / c; // Magnetic field is directed in the +y-axis and is equal to E/c
-	e_cpn[4] = 0.0;
+	//e_cpn[4] = 0.0;
 	e_cpn[5] = 0.0;
 	/*end of subroutine*/
 }
@@ -256,6 +262,7 @@ void Derivs(double tgot, double ygot[neq], double ypgot[neq]) {
 
 	//calculate gamma factor.
 	double gamma = sqrt(pow(me * c, 2.0) + pow(ygot[0], 2.0) + pow(ygot[1], 2.0) + pow(ygot[2], 2.0)) / (me * c);
+	//gamma = 1;
 
 	ypgot[3] = ygot[0] / (me * gamma); // dx/dt = vx = px/(m0*gamma)
 	ypgot[4] = ygot[1] / (me * gamma); // dy/dt = vy = py/(m0*gamma)
