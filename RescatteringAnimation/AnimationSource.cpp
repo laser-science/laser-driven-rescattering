@@ -53,9 +53,10 @@ const double IP = 4.625; // hartree
 // electrons sampled per wavepacket 
 const int nSample = 100;
 // Number of phase steps
-const int phaseSteps = 40;
+const int phaseSteps = 10;
 // Number of phase steps per optical cycle
-const int phasepercycle = 20;
+const int phasepercycle = 40;
+const int StartStep = 10;
 
 
 // Declare subroutines //
@@ -85,8 +86,8 @@ void PhaseIterator() {
 	vector<vector<vector<double>>> frame1(phaseSteps), frame2(phaseSteps);
 	ofstream outfile;
 	string tmp;
-	double time_stepsize = 2 * period / double(phaseSteps);
-	double t = 0.0;
+	double time_stepsize = period / double(phaseSteps) / 4.0;
+	double t = period/4.0;
 	// Begin Iterating over phase steps
 	for (int i = 1; i <= phaseSteps; i++) {
 		t += time_stepsize;
@@ -118,7 +119,7 @@ void PhaseIterator() {
 		for (int j = 1; j <= nSample; j++) {
 			// Loop over all wavepackets (columns)
 			for (int k = 1; k <= i; k++) {
-				if (((i-k + 1)%phasepercycle == phasepercycle / 2) || ((i - k + 1) % phasepercycle == 0)) {
+				if (((i-k + StartStep + 1)%phasepercycle == phasepercycle / 2) || ((i - k + StartStep + 1) % phasepercycle == 0)) {
 					// Skip these columns
 				}
 				else {
