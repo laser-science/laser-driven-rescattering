@@ -53,10 +53,12 @@ const double IP = 4.625; // hartree
 // electrons sampled per wavepacket 
 const int nSample = 100;
 // Number of phase steps
-const int phaseSteps = 10;
+const int phaseSteps = 40;
 // Number of phase steps per optical cycle
 const int phasepercycle = 40;
 const int StartStep = 10;
+// Number of wavefunctions 
+const int NumElectrons = 10;
 
 
 // Declare subroutines //
@@ -83,10 +85,10 @@ int main() {
 
 
 void PhaseIterator() {
-	vector<vector<vector<double>>> frame1(phaseSteps), frame2(phaseSteps);
+	vector<vector<vector<double>>> frame1(NumElectrons), frame2(NumElectrons);
 	ofstream outfile;
 	string tmp;
-	double time_stepsize = period / double(phaseSteps) / 4.0;
+	double time_stepsize = period / double(phasepercycle);
 	double t = period/4.0;
 	// Begin Iterating over phase steps
 	for (int i = 1; i <= phaseSteps; i++) {
@@ -97,38 +99,55 @@ void PhaseIterator() {
 		outfile.open(name);
 		// clear previous frame data
 		frame2.clear();
-		frame2.resize(phaseSteps);
+		frame2.resize(NumElectrons);
 		// Iterate over all wavepackets (create a new wave packet per frame)
 		for (int j = 1; j <= i; j++) {	
-			if (j == i) {
+			if (j>NumElectrons) {
+				continue;
+			}
+			// get initial conditions for wavefunction
+			else if(j==i) {
 				wavepacket(t, time_stepsize, true, frame1[j - 1], frame2[j - 1]);
 			}
+			// Propogate wavefunction
 			else {
-				//cout << i << endl;
-				//cout << j << endl;
-				//cout << frame1[j - 1][0][3] << endl;
-				//cout << frame1[j - 1][0][0] << endl;
 				wavepacket(t, time_stepsize, false, frame1[j - 1], frame2[j - 1]);
-				//cout << frame2[j - 1][0][3] << endl;
-				//cout << frame2[j - 1][0][0] << endl;
-				//system("pause");
 			}
 		}
 		// Output to data file
 		// Loop over all samples per wavepacket (rows)
 		for (int j = 1; j <= nSample; j++) {
 			// Loop over all wavepackets (columns)
-			for (int k = 1; k <= i; k++) {
-				if (((i-k + StartStep + 1)%phasepercycle == phasepercycle / 2) || ((i - k + StartStep + 1) % phasepercycle == 0)) {
-					// Skip these columns
+			if (i > NumElectrons) {
+				for (int k = 1; k <= NumElectrons; k++) {
+					if (((StartStep + k) % phasepercycle == phasepercycle / 2) || ((StartStep + k) % phasepercycle == 0)) {
+						continue;
+						//skip these
+					}
+					else {
+						outfile << frame2[k - 1][j - 1][3] << " " << frame2[k - 1][j - 1][5] << " ";
+					}
 				}
-				else {
-					// output (x,z) coordinate
-					outfile << frame2[i-k][j - 1][3] << " " << frame2[i-k][j - 1][5] << " ";
-				}
+				outfile << endl;
 			}
-			outfile << endl;
+			
+			else {
+				for (int k = 1; k <= i; k++) {
+					if (((StartStep + k) % phasepercycle == phasepercycle / 2) || ((StartStep + k) % phasepercycle == 0)) {
+						continue;
+						//skip these
+					}
+					else {
+						outfile << frame2[k - 1][j - 1][3] << " " << frame2[k - 1][j - 1][5] << " ";
+					}
+				}
+				outfile << endl;
+			}
+			
 		}
+		//output phase step
+		outfile <<2 * pi * t / period;
+		
 		// Set the current frame to the initial frame next phase step
 		frame1 = frame2;
 		// Close current frame data file
@@ -203,10 +222,10 @@ void GetInitial(double t, double ip, int nSample, vector<double>* iniX, vector<d
 			iniPy->push_back(delPy); // This is a random sample from the momentum distribution in y
 
 			delx = zy_position(generator); // This is a random sample from the x distribution
-			iniX->push_back(delx);
+			iniX->push_back(0.1*delx);
 
 			delPx = zy_momentum(generator);
-			iniPx->push_back(delPx);
+			iniPx->push_back(0.1*delPx);
 		}
 	}
 	/*end of function*/
