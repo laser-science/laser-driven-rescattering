@@ -7,6 +7,7 @@
 #include<vector>
 #include<random>
 #include<string>
+#include<iomanip>
 #include"rksuite.h"
 
 using namespace std;
@@ -40,7 +41,7 @@ const double period = wavelength / c;
 
 
 // intensity of laser
-const double intensity = 2.2e17; // W/cm^2
+const double intensity = 2.2e18; // W/cm^2
 const double int_au = 6.43640931e15; // atomic units to W/cm^2 conversion factor (do not change)
 const double Emag = sqrt((8.0 * pi * (intensity / int_au)) / c); // conversion to atomic units field
 
@@ -53,12 +54,12 @@ const double IP = 4.625; // hartree
 // electrons sampled per wavepacket 
 const int nSample = 100;
 // Number of phase steps
-const int phaseSteps = 40;
+const int phaseSteps = 160;
 // Number of phase steps per optical cycle
-const int phasepercycle = 40;
-const int StartStep = 10;
+const int phasepercycle = 160;
+const int StartStep = 40;
 // Number of wavefunctions 
-const int NumElectrons = 10;
+const int NumElectrons = 40;
 
 
 // Declare subroutines //
@@ -125,7 +126,7 @@ void PhaseIterator() {
 						//skip these
 					}
 					else {
-						outfile << frame2[k - 1][j - 1][3] << " " << frame2[k - 1][j - 1][5] << " ";
+						outfile << fixed << setprecision(5) << frame2[k - 1][j - 1][3] << " " << frame2[k - 1][j - 1][5] << " ";
 					}
 				}
 				outfile << endl;
@@ -138,15 +139,15 @@ void PhaseIterator() {
 						//skip these
 					}
 					else {
-						outfile << frame2[k - 1][j - 1][3] << " " << frame2[k - 1][j - 1][5] << " ";
+						outfile << fixed << setprecision(5) << frame2[k - 1][j - 1][3] << " " << frame2[k - 1][j - 1][5] << " ";
 					}
 				}
 				outfile << endl;
 			}
 			
 		}
-		//output phase step
-		outfile <<2 * pi * t / period;
+		//output phase step rounded to two decimal places
+		outfile << fixed << setprecision(2) << 2 * pi * t / period - 1.5708;
 		
 		// Set the current frame to the initial frame next phase step
 		frame1 = frame2;
