@@ -126,7 +126,7 @@ void PhaseIterator() {
 						//skip these
 					}
 					else {
-						outfile << fixed << setprecision(5) << frame2[k - 1][j - 1][3] << " " << frame2[k - 1][j - 1][5] << " ";
+						outfile << frame2[k - 1][j - 1][3] << " " << frame2[k - 1][j - 1][5] << " ";
 					}
 				}
 				outfile << endl;
@@ -139,7 +139,7 @@ void PhaseIterator() {
 						//skip these
 					}
 					else {
-						outfile << fixed << setprecision(5) << frame2[k - 1][j - 1][3] << " " << frame2[k - 1][j - 1][5] << " ";
+						outfile << frame2[k - 1][j - 1][3] << " " << frame2[k - 1][j - 1][5] << " ";
 					}
 				}
 				outfile << endl;
@@ -148,6 +148,7 @@ void PhaseIterator() {
 		}
 		//output phase step rounded to two decimal places
 		outfile << fixed << setprecision(2) << 2 * pi * t / period - 1.5708;
+		outfile << flush;
 		
 		// Set the current frame to the initial frame next phase step
 		frame1 = frame2;
