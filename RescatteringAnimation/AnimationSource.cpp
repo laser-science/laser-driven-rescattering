@@ -41,7 +41,7 @@ const double period = wavelength / c;
 
 
 // intensity of laser
-const double intensity = 2.2e18; // W/cm^2
+const double intensity = 5e18; // W/cm^2
 const double int_au = 6.43640931e15; // atomic units to W/cm^2 conversion factor (do not change)
 const double Emag = sqrt((8.0 * pi * (intensity / int_au)) / c); // conversion to atomic units field
 
@@ -54,12 +54,12 @@ const double IP = 4.625; // hartree
 // electrons sampled per wavepacket 
 const int nSample = 100;
 // Number of phase steps
-const int phaseSteps = 160;
+const int phaseSteps = 200;
 // Number of phase steps per optical cycle
 const int phasepercycle = 160;
-const int StartStep = 40;
+const int StartStep = 0;
 // Number of wavefunctions 
-const int NumElectrons = 40;
+const int NumElectrons = 80;
 
 
 // Declare subroutines //
@@ -90,7 +90,7 @@ void PhaseIterator() {
 	ofstream outfile;
 	string tmp;
 	double time_stepsize = period / double(phasepercycle);
-	double t = period/4.0;
+	double t = 0;
 	// Begin Iterating over phase steps
 	for (int i = 1; i <= phaseSteps; i++) {
 		t += time_stepsize;
@@ -284,7 +284,7 @@ void Derivs(double tgot, double ygot[neq], double ypgot[neq]) {
 
 	//calculate gamma factor.
 	double gamma = sqrt(pow(me * c, 2.0) + pow(ygot[0], 2.0) + pow(ygot[1], 2.0) + pow(ygot[2], 2.0)) / (me * c);
-	//gamma = 1;
+	//double gamma = 1;
 
 	ypgot[3] = ygot[0] / (me * gamma); // dx/dt = vx = px/(m0*gamma)
 	ypgot[4] = ygot[1] / (me * gamma); // dy/dt = vy = py/(m0*gamma)
