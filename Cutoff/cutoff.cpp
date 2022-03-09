@@ -57,7 +57,7 @@ const double pi = 4.0*atan(1.0);
 const double int_au = 6.43640931e15;
 
 // wavelength of drive laser
-const double wavelength_nm = 409; // Input wavelength here in nanometers
+const double wavelength_nm = 1280; // Input wavelength here in nanometers
 const double wavelength = wavelength_nm*18.897; // Conversion to atomic units (do not change)
 
 // frequency of drive laser
@@ -207,17 +207,17 @@ const int seedVect[Z] =
 };
 
 /* Number of monte-carlo generated trajectories sampled to form the wave packet */
-int nSample = 100;
+int nSample = 50;
 
 /*Time steps for initial ionization phase (birth phase) of laser cycle*/
-int BirthSteps = 400;
+int BirthSteps = 4000;
 
 /*These are the initial time steps used to find the x-axis. Leave this at around 100.*/
 int TrajSteps = 200;
 
 /*Precision of bisection algorithm when solving for xwant. If the algorithm gets x within the absolute value of this number,
  * it is considered to be equal to xwant. */
-double bisection_precision = 0.5;
+double bisection_precision = 0.0005;
 double xwant = 0.0;
 
 /****************************************************************************/
@@ -352,7 +352,7 @@ int start(int ion){
 	};
 
 	/*set time domain parameters*/
-	double t_delta = period/BirthSteps; /* Time step for birth phase. Divides the period of the drive laser by 4 (quarter cycle), then divides that time by the
+	double t_delta = period/BirthSteps/4.0; /* Time step for birth phase. Divides the period of the drive laser by 4 (quarter cycle), then divides that time by the
 												number of birth time steps. */
 	double t_integ_delta = (period/TrajSteps); /* Time step for trajectory calculation. Divides the period of the drive laser by the number of trajectory time steps. */
 
@@ -361,7 +361,7 @@ int start(int ion){
 	double gamma_R = (sqrt(2.0*ip[n_job]*me*pow(c,2.0))*pow(a0,3.0))/(16.0*hb*omega);
 
 	/*declare time domain variable*/
-	double t_start = 0.0 - t_delta; /*This is the initial phase of the laser phase (birth phase) set to the period/4. The first time step is subtracted off
+	double t_start = period/4.0 - t_delta; /*This is the initial phase of the laser phase (birth phase) set to the period/4. The first time step is subtracted off
 											so that the algorithm begins at the birth phase. */
 	double t_final, t_integ_final;
 
@@ -387,7 +387,7 @@ int start(int ion){
 
 		/*current start*/
 		t_start += t_delta;
-		t_final = t_start + 2*period; /* This is the final integration time setting the duration of the trajectory integration to the period of the laser.*/ // TESTESTSTSETSTSET
+		t_final = t_start + 1.1*period; /* This is the final integration time setting the duration of the trajectory integration to the period of the laser.*/ // TESTESTSTSETSTSET
 		t_integ_final = t_final + t_integ_delta; /*The additional term added to t_final is to prevent sampling times outside
 												   of the final time provided to rkuite.setup(), which causes an error
 												   (see rksuite documentation https://www.netlib.org/ode/rksuite/ for more details)*/
@@ -493,7 +493,7 @@ int start(int ion){
 					/*This will print out the data if the electron rescatters
 					* Then, it breaks the trajectory loop
 					*/
-					if (rescatter_time <= 2*period){
+					if (rescatter_time <= 1.1*period){
 						/* relativistic total energy */
 						rescatter_Etot = sqrt( (pow(y[0],2.0)+pow(y[1],2.0)+pow(y[2],2.0))*pow(c,2.0) +  pow(me,2.0)*pow(c,4.0) );
 

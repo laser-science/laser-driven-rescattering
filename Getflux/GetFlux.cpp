@@ -52,7 +52,7 @@ int main()
 		stringstream ind,ion,wavelength,Z;
 		ind << i; //ind will be the index value currently being called
 		ion << i+1; //ion will be the ion currently being called - for us this was usually 1 greater than the index as we would run ions from 1+ to some maximum
-		wavelength << 409; //input the wavelength you're running
+		wavelength << 1280; //input the wavelength you're running
 		Z << 36; //input the atomic number of the species calculated
 		file_str = path_str + "Z=" + Z.str() + "_data_" + ind.str() + "+" + ion.str() + "_" +  wavelength.str() + "nm.dat";
 		procMean(file_str,ind.str(),ion.str(),wavelength.str(),Z.str());
@@ -176,7 +176,7 @@ void procMean(string file_str, string flag, string ion, string wavelength, strin
 	input.close();
 
 	/*get rescattering flux per rescattering kinetic energy (dF_R/dE) and add it to each vector in datas*/
-	datas[0].push_back(datas[0][9]/abs(datas[1][8]-datas[0][8])); // First entry is outside the loop to prevent selecting "datas[i][8]" with a negative integer
+	datas[0].push_back(datas[0][9]/abs(datas[0][8])); // First entry is outside the loop to prevent selecting "datas[i][8]" with a negative integer
 	for (int i = 1; i < int(datas.size()); i++) /* For loop takes the rescattered wave function magnitude (psi*psi) calculated at the parent ion (x=y=z=0)
 												   times ADK_population times dt and divides it all by the change in rescattering kinetic energy dE. This quantity is
 												   the rescattering flux per rescattering kinetic energy (dF_R/dE) in the form of "Eq. 2" from 10.1103/PhysRevLett.118.093001 .*/
