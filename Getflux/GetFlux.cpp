@@ -52,7 +52,7 @@ int main()
 		stringstream ind,ion,wavelength,Z;
 		ind << i; //ind will be the index value currently being called
 		ion << i+1; //ion will be the ion currently being called - for us this was usually 1 greater than the index as we would run ions from 1+ to some maximum
-		wavelength << 1280; //input the wavelength you're running
+		wavelength << 720; //input the wavelength you're running
 		Z << 36; //input the atomic number of the species calculated
 		file_str = path_str + "Z=" + Z.str() + "_data_" + ind.str() + "+" + ion.str() + "_" +  wavelength.str() + "nm.dat";
 		procMean(file_str,ind.str(),ion.str(),wavelength.str(),Z.str());

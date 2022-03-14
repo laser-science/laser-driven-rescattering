@@ -57,7 +57,7 @@ const double pi = 4.0*atan(1.0);
 const double int_au = 6.43640931e15;
 
 // wavelength of drive laser
-const double wavelength_nm = 1280; // Input wavelength here in nanometers
+const double wavelength_nm = 720; // Input wavelength here in nanometers
 const double wavelength = wavelength_nm*18.897; // Conversion to atomic units (do not change)
 
 // frequency of drive laser
